@@ -25,12 +25,51 @@
 
 </style>
 </head>
-    </head> 
     <body> 
         <h1> Live at the Lab  </h1> 
         <img src="{{ url_for('video_feed') }}", width=50%, height=auto> 
-        <div class="slidecontainer">
-            <input type="range" min="0" max="180" value="90" class="slider" id="myRange">
-        </div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+    $(function() {
+      $('a#left').bind('click', function() {
+        $.getJSON('/pan_left',
+            function(data) {
+          //do nothing
+        });
+        return false;
+      });
+    });
+</script>
+
+
+<div class='container'>
+    <form>
+        <a href=# id=left><button class='btn btn-default'>Left</button></a>
+    </form>
+
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+    $(function() {
+      $('a#right').bind('click', function() {
+        $.getJSON('/pan_right',
+            function(data) {
+          //do nothing
+        });
+        return false;
+      });
+    });
+</script>
+
+
+<div class='container'>
+    <form>
+        <a href=# id=right><button class='btn btn-default'>Right</button></a>
+    </form>
+
+</div>
+
+
     </body> 
     </html> 

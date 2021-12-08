@@ -6,6 +6,9 @@ import cv2
 import socket 
 import io 
 import os
+import RPi.GPIO as GPIO
+from time import sleep
+import sys
 
 cascade_path=os.path.dirname(cv2.__file__)+"/data/haarcascade_frontalface_default.xml"
 face_cascade=cv2.CascadeClassifier(cascade_path)
@@ -16,11 +19,10 @@ videocapture = cv2.VideoCapture(0)
 def index(): 
    """Video streaming .""" 
    return render_template('index.html') 
-def gen(): 
-   """Video streaming generator function.""" 
+#The definition below creates the video frame by frame and adds the facial detection
+def video(): 
    while True: 
        rval, frame = videocapture.read() 
-#       cv2.imwrite('pic.jpg', frame) 
        
        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -39,10 +41,38 @@ def gen():
 
        yield (b'--frame\r\n' 
               b'Content-Type: image/jpeg\r\n\r\n' + open('pic.jpg', 'rb').read() + b'\r\n') 
+#Adds the video from the above step to the webpage element
 @app.route('/video_feed') 
 def video_feed(): 
-   """Video streaming route. Put this in the src attribute of an img tag.""" 
-   return Response(gen(), 
+   return Response(video(), 
                    mimetype='multipart/x-mixed-replace; boundary=frame') 
+
+@app.route('/pan_left')
+def pan_left():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(4, GPIO.OUT)
+    pwm = GPIO.PWM(4, 50)
+    pwm.start(0)
+    pwm.ChangeDutyCycle(2+(int(0)/18))
+    sleep(0.5)
+    pwm.ChangeDutyCycle(0)
+    pwm.stop()
+    GPIO.cleanup()
+    return "nothing"
+
+@app.route('/pan_right')
+def pan_right():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(4, GPIO.OUT)
+    pwm = GPIO.PWM(4, 50)
+    pwm.start(0)
+    pwm.ChangeDutyCycle(2+(int(180)/18))
+    sleep(0.5)
+    pwm.ChangeDutyCycle(0)
+    pwm.stop()
+    GPIO.cleanup()
+    return "nothing"
+
+
 if __name__ == '__main__': 
 	app.run(host='0.0.0.0', debug=False, threaded=True) 
