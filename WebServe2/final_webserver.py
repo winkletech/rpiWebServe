@@ -50,7 +50,7 @@ def video():
 
         cv2.imwrite('pic.jpg', frame)
 
-        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + open('pic.jpg', 'rb').read() + b'\r\n') 
+        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + open('/home/pi/cv_env/WebServe2/pic.jpg', 'rb').read() + b'\r\n') 
 
 #Adds the video from the above step to the webpage element
 
