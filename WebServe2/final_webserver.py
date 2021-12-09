@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from flask import Flask, render_template, Response 
+from flask import Flask, render_template, Response, jsonify, request, redirect, url_for
 import picamera 
 import cv2
 import socket 
@@ -18,7 +18,7 @@ videocapture = cv2.VideoCapture(0)
 @app.route('/') 
 def index(): 
    """Video streaming .""" 
-   return render_template('index.html') 
+   return render_template('test_index.html') 
 #The definition below creates the video frame by frame and adds the facial detection
 def video(): 
    while True: 
@@ -47,32 +47,39 @@ def video_feed():
    return Response(video(), 
                    mimetype='multipart/x-mixed-replace; boundary=frame') 
 
-@app.route('/pan_left')
-def pan_left():
+
+@app.route('/pan_slider')
+def pan():
+    pan_val = request.args.get('pan_val')
+#    print(pan_val)
+#    return pan_val
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(4, GPIO.OUT)
-    pwm = GPIO.PWM(4, 50)
-    pwm.start(0)
-    pwm.ChangeDutyCycle(2+(int(0)/18))
+    pwm_pan = GPIO.PWM(4, 50)
+    pwm_pan.start(0)
+    pwm_pan.ChangeDutyCycle(2+(int(pan_val)/18))
     sleep(0.5)
-    pwm.ChangeDutyCycle(0)
-    pwm.stop()
+    pwm_pan.ChangeDutyCycle(0)
+    pwm_pan.stop()
     GPIO.cleanup()
-    return "nothing"
+    return(pan_val)
 
-@app.route('/pan_right')
-def pan_right():
+
+@app.route('/tilt_slider')
+def tilt():
+    tilt_val = request.args.get('slide_val2')
+#    print(tilt_val)
+#    return(tilt_val)
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(4, GPIO.OUT)
-    pwm = GPIO.PWM(4, 50)
-    pwm.start(0)
-    pwm.ChangeDutyCycle(2+(int(180)/18))
+    GPIO.setup(23, GPIO.OUT)
+    pwm_tilt = GPIO.PWM(23, 50)
+    pwm_tilt.start(0)
+    pwm_tilt.ChangeDutyCycle(2+(int(tilt_val)/18))
     sleep(0.5)
-    pwm.ChangeDutyCycle(0)
-    pwm.stop()
-    GPIO.cleanup()
-    return "nothing"
-
+    pwm_tilt.ChangeDutyCycle(0)
+    pwm_tilt.stop()
+    GPIO.cleanup
+    return(tilt_val)
 
 if __name__ == '__main__': 
 	app.run(host='0.0.0.0', debug=False, threaded=True) 
