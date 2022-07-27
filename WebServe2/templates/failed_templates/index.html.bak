@@ -1,9 +1,0 @@
-<html> 
-    <head> 
-      <title> Live at the Lab </title> 
-    </head> 
-    <body> 
-      <h1> Live at the Lab  </h1> 
-      <img src="{{ url_for('video_feed') }}", width=50%, height=auto> 
-    </body> 
-   </html> 
